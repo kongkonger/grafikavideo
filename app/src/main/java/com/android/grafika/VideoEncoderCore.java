@@ -147,7 +147,7 @@ public class VideoEncoderCore {
 
 
         // TODO: 2020/5/7 cmc add
-        mMuxer = MediaMuxerWrapper.getInstance();
+        mMuxer = MediaMuxerWrapper.getInstance(outputFile.getAbsolutePath());
         mTrackIndex = -1;
         mMuxerStarted = false;
     }
@@ -172,9 +172,10 @@ public class VideoEncoderCore {
         if (mMuxer != null) {
             // TODO: stop() throws an exception if you haven't fed it any data.  Keep track
             //       of frames submitted, and don't call stop() if we haven't written anything.
-//            mMuxer.stop();
+            // TODO: 2020/5/12 没有正确的进行停止导致无法完成视频录制 
+            mMuxer.stop();
 //            mMuxer.release();
-            mMuxer.stopRecording();
+//            mMuxer.stopRecording();
 
             mMuxer = null;
         }

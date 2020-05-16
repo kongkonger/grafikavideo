@@ -55,12 +55,12 @@ public class MediaMuxerWrapper {
 
 
 	private static  MediaMuxerWrapper mMediaMuxerWrapper;
-	public static MediaMuxerWrapper getInstance(){
+	public static MediaMuxerWrapper getInstance(String ext){
 		if(null == mMediaMuxerWrapper){
 			synchronized (MediaMuxerWrapper.class){
 				if(null == mMediaMuxerWrapper){
 					try {
-						mMediaMuxerWrapper = new MediaMuxerWrapper("");
+						mMediaMuxerWrapper = new MediaMuxerWrapper(ext);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -76,13 +76,14 @@ public class MediaMuxerWrapper {
 	 * @throws IOException
 	 */
 	public MediaMuxerWrapper(String ext) throws IOException {
-		if (TextUtils.isEmpty(ext)) ext = ".mp4";
-		try {
-			mOutputPath = getCaptureFile(Environment.DIRECTORY_MOVIES, ext).toString();
-		} catch (final NullPointerException e) {
-			throw new RuntimeException("This app has no permission of writing external storage");
-		}
-		mMediaMuxer = new MediaMuxer(mOutputPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+		if (TextUtils.isEmpty(ext)) ext = "abc.mp4";
+//		try {
+//			mOutputPath = getCaptureFile(Environment.DIRECTORY_MOVIES, ext).toString();
+//		} catch (final NullPointerException e) {
+//			throw new RuntimeException("This app has no permission of writing external storage");
+//		}
+//		mMediaMuxer = new MediaMuxer(mOutputPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+		mMediaMuxer = new MediaMuxer(ext, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
 		mEncoderCount = mStatredCount = 0;
 		mIsStarted = false;
 	}
@@ -174,7 +175,7 @@ public class MediaMuxerWrapper {
 	/**
 	 * request stop recording from encoder when encoder received EOS
 	*/
-	/*package*/ synchronized void stop() {
+	/*package*/ public synchronized void stop() {
 		if (DEBUG) Log.v(TAG,  "stop:mStatredCount=" + mStatredCount);
 		mStatredCount--;
 		if ((mEncoderCount > 0) && (mStatredCount <= 0)) {

@@ -703,14 +703,14 @@ class CameraSurfaceRenderer implements GLSurfaceView.Renderer {
             switch (mRecordingStatus) {
                 case RECORDING_OFF:
                     Log.d(TAG, "START recording");
-                    MediaMuxerWrapper mMuxer = MediaMuxerWrapper.getInstance();
-                    mMuxer.addVideoEncoder(mVideoEncoder);
+
+
                     // start recording
                     mVideoEncoder.prepareRecording(new TextureMovieEncoder.EncoderConfig(
                             mOutputFile, 640, 480, 1000000, EGL14.eglGetCurrentContext()));
                     mRecordingStatus = RECORDING_ON;
 
-
+                    MediaMuxerWrapper mMuxer = MediaMuxerWrapper.getInstance(mOutputFile.getAbsolutePath());
                     if (true) {
                         // for audio capturing
                         new MediaAudioEncoder(mMuxer, new MediaEncoder.MediaEncoderListener() {
@@ -751,7 +751,7 @@ class CameraSurfaceRenderer implements GLSurfaceView.Renderer {
                 case RECORDING_RESUMED:
                     // stop recording
                     Log.d(TAG, "STOP recording");
-                    MediaMuxerWrapper mMuxer = MediaMuxerWrapper.getInstance();
+                    MediaMuxerWrapper mMuxer = MediaMuxerWrapper.getInstance(mOutputFile.getAbsolutePath());
                     if(null != mMuxer){
                         mMuxer.stopRecording();
                     }

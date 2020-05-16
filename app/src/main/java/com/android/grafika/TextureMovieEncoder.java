@@ -22,8 +22,10 @@ import android.opengl.GLES20;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.grafika.encoder.MediaMuxerWrapper;
 import com.android.grafika.gles.EglCore;
 import com.android.grafika.gles.FullFrameRect;
 import com.android.grafika.gles.Texture2dProgram;
@@ -158,6 +160,14 @@ public class TextureMovieEncoder implements Runnable {
                 return;
             }
             mRunning = true;
+
+            if(null != config.mOutputFile && !TextUtils.isEmpty(config.mOutputFile.getAbsolutePath())){
+                MediaMuxerWrapper mMuxer = MediaMuxerWrapper.getInstance(config.mOutputFile.getAbsolutePath());
+                if(null !=mMuxer){
+                    mMuxer.addVideoEncoder(this);
+                }
+            }
+
             new Thread(this, "TextureMovieEncoder").start();
             while (!mReady) {
                 try {
